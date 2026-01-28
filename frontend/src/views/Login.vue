@@ -3,7 +3,9 @@
 		<h2>Welcome to HyperGuest Test</h2>
 		<div class="login-form">
 			<input v-model="username" type="text" placeholder="Enter username" />
-			<button @click="handleLogin" :disabled="!username">Login</button>
+			<button @click="handleLogin" :disabled="!username || loading">
+				{{ loading ? "Logging in..." : "Login" }}
+			</button>
 		</div>
 		<p v-if="error" class="error">{{ error }}</p>
 	</div>
@@ -12,27 +14,26 @@
 <script setup>
 import { ref } from "vue"
 import { useRouter } from "vue-router"
-import axios from "axios"
+import { useStore } from "vuex"
 
 const router = useRouter()
+const store = useStore()
 const username = ref("")
 const error = ref("")
+const loading = ref(false)
 
 const handleLogin = async () => {
 	try {
 		error.value = ""
+		loading.value = true
 
-		const response = await axios.post(`/api/users/login/${username.value}`)
-
-		if (response.data) {
-			router.push({
-				path: "/home",
-				query: { username: username.value },
-			})
-		}
+		await store.dispatch("login", username.value)
+		router.push({ path: "/home" })
 	} catch (err) {
 		error.value =
 			err.response?.data?.message || "Login failed. Please try again."
+	} finally {
+		loading.value = false
 	}
 }
 </script>

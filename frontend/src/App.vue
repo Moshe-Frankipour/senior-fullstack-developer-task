@@ -1,9 +1,10 @@
 <template>
-	<div>
+	<v-app>
 		<Navbar v-if="showNavbar" />
-		<router-view />
-		<button v-if="showNavbar" @click="handleLogout">Logout</button>
-	</div>
+		<v-main>
+			<router-view />
+		</v-main>
+	</v-app>
 </template>
 
 <script setup>
