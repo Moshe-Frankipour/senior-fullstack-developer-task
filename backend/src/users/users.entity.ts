@@ -1,3 +1,4 @@
+import { UserStatus } from '../enums/userStatus.enum';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('users')
@@ -11,6 +12,6 @@ export class User {
   @Column('simple-json', { default: ['User'] })
   roles: string[];
 
-  @Column()
-  status: boolean;
+  @Column({ type: 'simple-enum', enum: UserStatus, default: UserStatus.Enabled })
+  status: UserStatus;
 }
